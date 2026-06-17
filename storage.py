@@ -60,7 +60,6 @@ class MongoDBStorage:
         query = {}
         if q:
             query_words = q.split()
-            print(query_words)
 
             # target_list = []
             # for word in query_words:
@@ -80,6 +79,25 @@ class MongoDBStorage:
             saved_books.append(self.transform_book(book))
 
         return saved_books
+
+    def get_books_by_price(self, q: int | float) -> list[BookSavedSchema]:
+        query = {"price": q}
+        books = self.collection.find(query).limit(5)
+
+        result = []
+
+        for book in books:
+            result.append(self.transform_book(book))
+
+        if not result:
+            raise HTTPException(
+                detail=f"Books with price: {q} not found",
+                status_code=status.HTTP_404_NOT_FOUND
+            )
+
+        return result
+
+
 
 
 

@@ -14,6 +14,13 @@ def create_book(book: BookCreateSchema) -> BookSavedSchema:
     return saved_book
 
 
+@api_router.get("/price")
+def get_book_by_price(
+        price: int | float = Query(ge=1)
+) -> list[BookSavedSchema]:
+    saved_books = storage.get_books_by_price(price)
+
+    return saved_books
 @api_router.get("/{book_id}")
 def get_book(book_id: str) -> BookSavedSchema:
     saved_book = storage.get_book(book_id)
@@ -29,3 +36,4 @@ def get_books(
     saved_books = storage.get_books(q, page=page)
 
     return saved_books
+
