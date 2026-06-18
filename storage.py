@@ -4,7 +4,7 @@ from datetime import datetime
 from bson import ObjectId
 from bson.errors import InvalidId
 from fastapi import HTTPException, status
-from abc import ABC, abstractmethod
+
 
 from schemas import BookCreateSchema, BookSavedSchema, BookPriceImageSchema
 from settings import settings
