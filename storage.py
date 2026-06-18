@@ -4,36 +4,13 @@ from datetime import datetime
 from bson import ObjectId
 from bson.errors import InvalidId
 from fastapi import HTTPException, status
-from abc import ABC, abstractmethod
+
 
 from schemas import BookCreateSchema, BookSavedSchema, BookPriceImageSchema
 from settings import settings
 
 
-
-class BaseStorage(ABC):
-    @abstractmethod
-    def create_book(self, book: BookCreateSchema) -> BookSavedSchema:
-        pass
-
-    @abstractmethod
-    def update_book(self, book_id: str, new_book_data: BookPriceImageSchema | BookCreateSchema) -> BookSavedSchema:
-        pass
-
-    @abstractmethod
-    def get_book(self, book_id: str) -> BookSavedSchema:
-        pass
-
-    @abstractmethod
-    def delete_book(self, book_id: str) -> None:
-        pass
-
-    @abstractmethod
-    def get_books(self, q: str = "", page: int = 1)-> list[BookSavedSchema]:
-        pass
-
-
-class MongoDBStorage(BaseStorage):
+class MongoDBStorage:
     def __init__(self):
         client = MongoClient(settings.MONGO_URI, server_api=ServerApi('1'))
         db = client[settings.MONGO_DB]
@@ -125,4 +102,4 @@ class MongoDBStorage(BaseStorage):
 
 
 
-storage: BaseStorage = MongoDBStorage()
+storage = MongoDBStorage()
