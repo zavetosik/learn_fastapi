@@ -2,16 +2,16 @@ from pydantic import BaseModel, Field
 from datetime import datetime
 
 
-class BookPriceImageSchema(BaseModel):
+class CarPriceImageSchema(BaseModel):
     price: float = Field(ge=1)
-    image: str = Field(examples=['https://upload.wikimedia.org/wikipedia/uk/1/18/I_Am_Legend_%28ukr_poster%29.jpg'])
+    image: str = Field(examples=['https://drivar.de/wp-6401f-content/uploads/2022/10/i9xC4cjstBAayPPzgbMir-scaled.webp'])
 
 
-class BookCreateSchema(BookPriceImageSchema):
-    title: str = Field(examples=['Я, легенда'])
-    author: str = Field(examples=['Річард Метісон'])
+class CarCreateSchema(CarPriceImageSchema):
+    title: str = Field(examples=['M3 Competition'])
+    brand: str = Field(examples=['BMW'])
 
 
-class BookSavedSchema(BookCreateSchema):
+class CarSavedSchema(CarCreateSchema):
     id: str
     created_at: datetime = Field(default_factory=datetime.now)

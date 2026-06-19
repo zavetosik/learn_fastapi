@@ -6,7 +6,7 @@ from bson.errors import InvalidId
 from fastapi import HTTPException, status
 
 
-from schemas import BookCreateSchema, BookSavedSchema, BookPriceImageSchema
+from schemas import CarCreateSchema, CarSavedSchema, CarPriceImageSchema
 from settings import settings
 
 
@@ -16,75 +16,71 @@ class MongoDBStorage:
         db = client[settings.MONGO_DB]
         self.collection = db[settings.MONGO_COLLECTION]
 
-    def create_book(self, book: BookCreateSchema) -> BookSavedSchema:
-        book_dict = book.model_dump()
-        book_dict['created_at'] = datetime.now()
-        saved_book_in_db = self.collection.insert_one(book_dict)
+    def create_car(self, car: CarCreateSchema) -> CarSavedSchema:
+        car_dict = car.model_dump()
+        car_dict['created_at'] = datetime.now()
+        saved_car_in_db = self.collection.insert_one(car_dict)
 
-        saved_book = self.get_book(saved_book_in_db.inserted_id)
+        saved_car = self.get_car(saved_car_in_db.inserted_id)
 
-        return saved_book
+        return saved_car
 
-    def update_book(self, book_id: str, new_book_data: BookPriceImageSchema | BookCreateSchema) -> BookSavedSchema:
-        payload = {'$set': new_book_data.model_dump()}
-        result = self.collection.update_one(self._get_object_id_query(book_id), payload)
+    def update_car(self, car_id: str, new_car_data: CarPriceImageSchema | CarCreateSchema) -> CarSavedSchema:
+        payload = {'$set': new_car_data.model_dump()}
+        result = self.collection.update_one(self._get_object_id_query(car_id), payload)
         if not result.raw_result['n']:
             raise HTTPException(
-                detail=f'Book with id={book_id} not found',
+                detail=f'Book with id={car_id} not found',
                 status_code=status.HTTP_404_NOT_FOUND
             )
 
-        saved_book = self.get_book(book_id)
-        return saved_book
+        saved_car = self.get_car(car_id)
+        return saved_car
 
-    def _get_object_id_query(self, book_id: str) -> dict[str, ObjectId]:
+    def _get_object_id_query(self, car_id: str) -> dict[str, ObjectId]:
         try:
-            query = {"_id": ObjectId(book_id)}
+            query = {"_id": ObjectId(car_id)}
             return query
         except InvalidId:
             raise HTTPException(
-                detail=f"Invalid book id {book_id}",
+                detail=f"Invalid book id {car_id}",
                 status_code=status.HTTP_400_BAD_REQUEST
             )
 
-    def get_book(self, book_id: str) -> BookSavedSchema:
-        book = self.collection.find_one(self._get_object_id_query(book_id))
-        if not book:
+    def get_car(self, car_id: str) -> CarSavedSchema:
+        car = self.collection.find_one(self._get_object_id_query(car_id))
+        if not car:
             raise HTTPException(
-                detail=f'Book with id={book_id} not found',
+                detail=f'Book with id={car_id} not found',
                 status_code=status.HTTP_404_NOT_FOUND
             )
 
-        book = self.transform_book(book)
+        car = self.transform_car(car)
 
-        return book
+        return car
 
-    def delete_book(self, book_id: str) -> None:
-        self.get_book(book_id)
-        self.collection.delete_one(self._get_object_id_query(book_id))
+    def delete_car(self, car_id: str) -> None:
+        self.get_car(car_id)
+        self.collection.delete_one(self._get_object_id_query(car_id))
 
-    def transform_book(self, book: dict) -> BookSavedSchema:
-        book = BookSavedSchema(
-            title=book['title'],
-            image=book['image'],
-            price=book['price'],
-            author=book['author'],
-            id=str(book['_id']),
-            created_at=book['created_at'],
+    def transform_car(self, car: dict) -> CarSavedSchema:
+        car = CarSavedSchema(
+            title=car['title'],
+            image=car['image'],
+            price=car['price'],
+            brand=car['brand'],
+            id=str(car['_id']),
+            created_at=car['created_at'],
         )
-        return book
+        return car
 
 
-    def get_books(self, q: str = "", page: int = 1)-> list[BookSavedSchema]:
+    def get_cars(self, q: str = "", page: int = 1)-> list[CarSavedSchema]:
         query = {}
         if q:
             query_words = q.split()
             print(query_words)
 
-            # target_list = []
-            # for word in query_words:
-            #     if len(word) > 1:
-            #         target_list.append(word.lower())
             query_words = [word.lower() for word in query_words if len(word) > 1]
 
             if query_words:
@@ -93,12 +89,12 @@ class MongoDBStorage:
                     "$and": query_words_dicts
                 }
         skip = (page - 1) *  settings.PAGE_SIZE
-        books = self.collection.find(query).limit(settings.PAGE_SIZE).skip(skip)
-        saved_books = []
-        for book in books:
-            saved_books.append(self.transform_book(book))
+        cars = self.collection.find(query).limit(settings.PAGE_SIZE).skip(skip)
+        saved_cars = []
+        for car in cars:
+            saved_cars.append(self.transform_car(car))
 
-        return saved_books
+        return saved_cars
 
 
 
