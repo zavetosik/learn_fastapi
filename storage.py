@@ -71,6 +71,8 @@ class MongoDBStorage:
             brand=car['brand'],
             id=str(car['_id']),
             created_at=car['created_at'],
+            year=car['year'],
+            mileage=car['mileage'],
         )
         return car
 
