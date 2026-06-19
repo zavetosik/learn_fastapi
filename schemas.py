@@ -12,6 +12,7 @@ class CarCreateSchema(CarPriceImageSchema):
     brand: str = Field(examples=['BMW'])
     year: int = Field(examples=[2022])
     mileage: int = Field(examples=[4])
+    color: str = Field(examples=['red'])
 
 
 class CarSavedSchema(CarCreateSchema):

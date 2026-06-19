@@ -73,6 +73,7 @@ class MongoDBStorage:
             created_at=car['created_at'],
             year=car['year'],
             mileage=car['mileage'],
+            color=car['color'],
         )
         return car
 
