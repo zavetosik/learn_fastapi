@@ -21,7 +21,7 @@ class MongoDBStorage:
         car_dict['created_at'] = datetime.now()
         saved_car_in_db = self.collection.insert_one(car_dict)
 
-        saved_car = self.get_book(saved_car_in_db.inserted_id)
+        saved_car = self.get_car(saved_car_in_db.inserted_id)
 
         return saved_car
 

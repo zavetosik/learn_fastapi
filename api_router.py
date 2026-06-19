@@ -38,7 +38,7 @@ def delete_car(car_id: str) -> None:
 
 @api_router.patch("/{car_id}")
 def patch_car(car_id: str, new_car_data: CarPriceImageSchema) -> CarSavedSchema:
-    patched_car = storage.update_book(car_id, new_car_data)
+    patched_car = storage.update_car(car_id, new_car_data)
 
     return patched_car
 

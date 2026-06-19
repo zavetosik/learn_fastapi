@@ -4,7 +4,7 @@ from datetime import datetime
 
 class CarPriceImageSchema(BaseModel):
     price: float = Field(ge=1)
-    image: str = Field(examples=['https://upload.wikimedia.org/wikipedia/uk/1/18/I_Am_Legend_%28ukr_poster%29.jpg'])
+    image: str = Field(examples=['https://drivar.de/wp-6401f-content/uploads/2022/10/i9xC4cjstBAayPPzgbMir-scaled.webp'])
 
 
 class CarCreateSchema(CarPriceImageSchema):
