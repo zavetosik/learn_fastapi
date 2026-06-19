@@ -1,50 +1,50 @@
 from fastapi import APIRouter, status, Query
-from schemas import BookCreateSchema, BookSavedSchema, BookPriceImageSchema
+from schemas import CarCreateSchema, CarSavedSchema, CarPriceImageSchema
 
 from storage import storage
 
 api_router = APIRouter(
-    prefix='/api/books'
+    prefix='/api/cars'
 )
 
 @api_router.post("", status_code=status.HTTP_201_CREATED)
-def create_book(book: BookCreateSchema) -> BookSavedSchema:
-    saved_book = storage.create_book(book)
+def create_car(car: CarCreateSchema) -> CarSavedSchema:
+    saved_car = storage.create_car(car)
 
-    return saved_book
+    return saved_car
 
 
-@api_router.get("/{book_id}")
-def get_book(book_id: str) -> BookSavedSchema:
-    saved_book = storage.get_book(book_id)
+@api_router.get("/{car_id}")
+def get_car(car_id: str) -> CarSavedSchema:
+    saved_car = storage.get_car(car_id)
 
-    return saved_book
+    return saved_car
 
 
 @api_router.get("")
-def get_books(
+def get_cars(
         page: int = Query(default=1, ge=1),
         q: str = Query(default=''),
-) -> list[BookSavedSchema]:
-    saved_books = storage.get_books(q, page=page)
+) -> list[CarSavedSchema]:
+    saved_cars = storage.get_cars(q, page=page)
 
-    return saved_books
-
-
-@api_router.delete("/{book_id}", status_code=status.HTTP_204_NO_CONTENT)
-def delete_book(book_id: str) -> None:
-    storage.delete_book(book_id)
+    return saved_cars
 
 
-@api_router.patch("/{book_id}")
-def patch_book(book_id: str, new_book_data: BookPriceImageSchema) -> BookSavedSchema:
-    patched_book = storage.update_book(book_id, new_book_data)
-
-    return patched_book
+@api_router.delete("/{car_id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_car(car_id: str) -> None:
+    storage.delete_car(car_id)
 
 
-@api_router.put("/{book_id}")
-def put_book(book_id: str, book: BookCreateSchema) -> BookSavedSchema:
-    put_book_obj = storage.update_book(book_id, book)
+@api_router.patch("/{car_id}")
+def patch_car(car_id: str, new_car_data: CarPriceImageSchema) -> CarSavedSchema:
+    patched_car = storage.update_book(car_id, new_car_data)
 
-    return put_book_obj
+    return patched_car
+
+
+@api_router.put("/{car_id}")
+def put_car(car_id: str, car: CarCreateSchema) -> CarSavedSchema:
+    put_car_obj = storage.update_car(car_id, car)
+
+    return put_car_obj
